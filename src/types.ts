@@ -74,6 +74,12 @@ export interface AmbilightState {
   smoothing: number;
   fps: number;
   sampling: string;
+  algorithm: AmbilightAlgorithm;
+}
+
+export enum AmbilightAlgorithm {
+  Dominant = "dominant",
+  Average = "average",
 }
 
 export type EffectId =
