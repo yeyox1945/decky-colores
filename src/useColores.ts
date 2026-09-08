@@ -14,7 +14,10 @@ import * as api from "./api";
 import { useRunningApp } from "./apps/useRunningApp";
 import { nextProfileScope } from "./profiles/scope";
 
-function withProfile(state: ColoresState, profileState: ProfileState): ColoresState {
+function withProfile(
+  state: ColoresState,
+  profileState: ProfileState,
+): ColoresState {
   return {
     ...state,
     ...profileState.profile,
@@ -22,7 +25,10 @@ function withProfile(state: ColoresState, profileState: ProfileState): ColoresSt
   };
 }
 
-function useThrottle<A extends unknown[]>(fn: (...args: A) => void, ms: number) {
+function useThrottle<A extends unknown[]>(
+  fn: (...args: A) => void,
+  ms: number,
+) {
   const fnRef = useRef(fn);
   fnRef.current = fn;
   const last = useRef(0);
@@ -62,7 +68,8 @@ export function useColores() {
   });
 
   const refreshState = useCallback(() => {
-    api.getState()
+    api
+      .getState()
       .then((s) => {
         setState(s);
         if (!initializedScope.current) {
@@ -86,14 +93,23 @@ export function useColores() {
     refreshState();
   }, [refreshState]);
 
-  const loadProfile = useCallback((scope: ProfileScope, appKey: string | null) => {
-    profileTarget.current = { scope, appKey };
-    setProfileScope(scope);
-    return api
-      .getProfileState(scope, appKey)
-      .then((profileState) => setState((current) => (current ? withProfile(current, profileState) : current)))
-      .catch((error) => console.error("Colores: getProfileState failed", error));
-  }, []);
+  const loadProfile = useCallback(
+    (scope: ProfileScope, appKey: string | null) => {
+      profileTarget.current = { scope, appKey };
+      setProfileScope(scope);
+      return api
+        .getProfileState(scope, appKey)
+        .then((profileState) =>
+          setState((current) =>
+            current ? withProfile(current, profileState) : current,
+          ),
+        )
+        .catch((error) =>
+          console.error("Colores: getProfileState failed", error),
+        );
+    },
+    [],
+  );
 
   useEffect(() => {
     if (!initializedScope.current) return;
@@ -112,7 +128,7 @@ export function useColores() {
   }, [loadProfile, profileScope, runningApp]);
 
   const selectScope = (scope: ProfileScope) => {
-    const appKey = scope === "game" ? runningApp?.key ?? null : null;
+    const appKey = scope === "game" ? (runningApp?.key ?? null) : null;
     if (scope === "game" && appKey === null) return;
     void loadProfile(scope, appKey);
   };
@@ -129,14 +145,16 @@ export function useColores() {
       .catch((error) => console.error("Colores: patchProfile failed", error));
   }, []);
 
-  const noLeds = !!state && !state.capabilities.color && !state.capabilities.brightness;
+  const noLeds =
+    !!state && !state.capabilities.color && !state.capabilities.brightness;
   const acquireDeadline = useRef<number | null>(null);
   useEffect(() => {
     if (!noLeds) {
       acquireDeadline.current = null;
       return;
     }
-    if (acquireDeadline.current === null) acquireDeadline.current = Date.now() + 30000;
+    if (acquireDeadline.current === null)
+      acquireDeadline.current = Date.now() + 30000;
     if (Date.now() >= acquireDeadline.current) return;
     const timer = setTimeout(refreshState, 2000);
     return () => clearTimeout(timer);
@@ -147,8 +165,14 @@ export function useColores() {
     if (state) effectRef.current = state.effect;
   }, [state]);
 
-  const pushSolid = useThrottle((c: RGB) => pushProfile({ color: [c.r, c.g, c.b] }), 60);
-  const pushBrightness = useThrottle((v: number) => pushProfile({ brightness: v }), 60);
+  const pushSolid = useThrottle(
+    (c: RGB) => pushProfile({ color: [c.r, c.g, c.b] }),
+    60,
+  );
+  const pushBrightness = useThrottle(
+    (v: number) => pushProfile({ brightness: v }),
+    60,
+  );
   const pushEffect = useThrottle(
     (id: EffectId, speed: number, useGradient: boolean) =>
       pushProfile({ effect: { id, speed, use_gradient: useGradient } }),
@@ -172,9 +196,9 @@ export function useColores() {
 
   const setChargerOnly = (chargerOnly: boolean) => {
     setState((s) => (s ? { ...s, chargerOnly } : s));
-    api.setChargerOnly(chargerOnly).catch((e) =>
-      console.error("Colores: setChargerOnly failed", e),
-    );
+    api
+      .setChargerOnly(chargerOnly)
+      .catch((e) => console.error("Colores: setChargerOnly failed", e));
   };
 
   const setMode = (mode: Mode) => {
@@ -192,14 +216,21 @@ export function useColores() {
     void pushProfile({ gradient: gradient.map((c) => [c.r, c.g, c.b]) });
   };
 
-  const pushGradientSpeed = useThrottle((v: number) => pushProfile({ gradient_speed: v }), 60);
+  const pushGradientSpeed = useThrottle(
+    (v: number) => pushProfile({ gradient_speed: v }),
+    60,
+  );
   const setGradientSpeed = (gradientSpeed: number) => {
     setState((s) => (s ? { ...s, gradientSpeed } : s));
     pushGradientSpeed(gradientSpeed);
   };
 
   const updateEffect = (patch: Partial<EffectState>) => {
-    const base = effectRef.current ?? { id: "breathing", speed: 50, useGradient: false };
+    const base = effectRef.current ?? {
+      id: "breathing",
+      speed: 50,
+      useGradient: false,
+    };
     const next: EffectState = { ...base, ...patch };
     effectRef.current = next;
     setState((s) => (s ? { ...s, effect: next } : s));
@@ -208,52 +239,73 @@ export function useColores() {
 
   const setEffectId = (id: EffectId) => updateEffect({ id });
   const setEffectSpeed = (speed: number) => updateEffect({ speed });
-  const setEffectGradient = (useGradient: boolean) => updateEffect({ useGradient });
+  const setEffectGradient = (useGradient: boolean) =>
+    updateEffect({ useGradient });
 
   const setAmbilight = (vividness: number, smoothing: number, fps: number) => {
-    setState((s) => (s ? { ...s, ambilight: { ...s.ambilight, vividness, smoothing, fps } } : s));
+    setState((s) =>
+      s
+        ? { ...s, ambilight: { ...s.ambilight, vividness, smoothing, fps } }
+        : s,
+    );
     pushAmbilight(vividness, smoothing, fps);
   };
 
   const setAmbilightSampling = (sampling: string) => {
-    setState((s) => (s ? { ...s, ambilight: { ...s.ambilight, sampling } } : s));
+    setState((s) =>
+      s ? { ...s, ambilight: { ...s.ambilight, sampling } } : s,
+    );
     void pushProfile({ ambilight: { sampling } });
   };
 
   const saveGradient = (name: string, stops: RGB[]) => {
     api
-      .saveGradient(name, stops.map((c) => [c.r, c.g, c.b]))
-      .then((savedGradients) => setState((s) => (s ? { ...s, savedGradients } : s)))
+      .saveGradient(
+        name,
+        stops.map((c) => [c.r, c.g, c.b]),
+      )
+      .then((savedGradients) =>
+        setState((s) => (s ? { ...s, savedGradients } : s)),
+      )
       .catch((e) => console.error("Colores: saveGradient failed", e));
   };
 
   const deleteGradient = (name: string) => {
     setState((s) =>
-      s ? { ...s, savedGradients: s.savedGradients.filter((g) => g.name !== name) } : s,
+      s
+        ? {
+            ...s,
+            savedGradients: s.savedGradients.filter((g) => g.name !== name),
+          }
+        : s,
     );
     api
       .deleteGradient(name)
-      .then((savedGradients) => setState((s) => (s ? { ...s, savedGradients } : s)))
+      .then((savedGradients) =>
+        setState((s) => (s ? { ...s, savedGradients } : s)),
+      )
       .catch((e) => console.error("Colores: deleteGradient failed", e));
   };
 
   const setPowerLed = (off: boolean) => {
     setState((s) => (s ? { ...s, powerLedOff: off } : s));
-    api.setPowerLed(off).catch((e) => console.error("Colores: setPowerLed failed", e));
+    api
+      .setPowerLed(off)
+      .catch((e) => console.error("Colores: setPowerLed failed", e));
   };
 
   const setForceControl = (forceControl: boolean) => {
     setState((s) => (s ? { ...s, forceControl } : s));
-    api.setForceControl(forceControl).catch((e) =>
-      console.error("Colores: setForceControl failed", e),
-    );
+    api
+      .setForceControl(forceControl)
+      .catch((e) => console.error("Colores: setForceControl failed", e));
   };
 
   const setRememberStartup = (rememberStartup: boolean) => {
     setState((s) => (s ? { ...s, rememberStartup } : s));
-    api.setRememberStartup(rememberStartup).catch((e) =>
-      console.error("Colores: setRememberStartup failed", e),
-    );
+    api
+      .setRememberStartup(rememberStartup)
+      .catch((e) => console.error("Colores: setRememberStartup failed", e));
   };
 
   const setBatteryBreathe = (batteryBreathe: boolean) => {
@@ -271,7 +323,9 @@ export function useColores() {
     api
       .setProfileFollowGlobal(runningApp.key, follow)
       .then(() => loadProfile("game", runningApp.key))
-      .catch((error) => console.error("Colores: setProfileFollowGlobal failed", error));
+      .catch((error) =>
+        console.error("Colores: setProfileFollowGlobal failed", error),
+      );
   };
 
   const forgetGameProfile = () => {
@@ -282,10 +336,7 @@ export function useColores() {
       .catch((error) => console.error("Colores: forgetProfile failed", error));
   };
 
-  const setSensorBands = (
-    sensor: SensorKind,
-    bands: SensorBand[],
-  ) =>
+  const setSensorBands = (sensor: SensorKind, bands: SensorBand[]) =>
     api.setSensorBands(sensor, bands).then((saved) => {
       setState((state) =>
         state

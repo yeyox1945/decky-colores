@@ -4,14 +4,14 @@ import { RGB } from "../types";
 import { rgbToCss } from "../color";
 
 const PRESETS: RGB[] = [
-  { r: 255, g: 38, b: 56 },
-  { r: 255, g: 122, b: 0 },
-  { r: 255, g: 214, b: 0 },
-  { r: 64, g: 224, b: 120 },
-  { r: 0, g: 196, b: 255 },
-  { r: 88, g: 86, b: 255 },
-  { r: 200, g: 70, b: 255 },
-  { r: 255, g: 255, b: 255 },
+  { r: 255, g: 0, b: 0 }, // Red
+  { r: 255, g: 165, b: 0 }, // Orange
+  { r: 255, g: 255, b: 0 }, // Yellow
+  { r: 0, g: 255, b: 0 }, // Green
+  { r: 0, g: 255, b: 255 }, // Cyan
+  { r: 0, g: 0, b: 255 }, // Blue
+  { r: 255, g: 0, b: 255 }, // Magenta
+  { r: 255, g: 255, b: 255 }, // White
 ];
 
 interface SwatchesProps {
