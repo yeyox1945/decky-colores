@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { RGB, ZoneGroup } from "../types";
 import { dim, expandGradient, rgbToCss, softenForDisplay } from "../color";
-import { repeatColor, segmentedConic, stickSegmentCounts } from "../devicePreview";
+import { segmentedConic, zonedStickColors } from "../devicePreview";
 import { useI18n } from "../i18n";
 
 interface DevicePreviewProps {
@@ -12,7 +12,7 @@ interface DevicePreviewProps {
   layoutKind?: string;
   segments?: number;
   layout?: ZoneGroup[];
-  solid?: boolean;
+  zoned?: boolean;
 }
 
 const OFF: RGB = { r: 26, g: 26, b: 32 };
@@ -133,12 +133,12 @@ export const DevicePreview: FC<DevicePreviewProps> = ({
   layoutKind,
   segments,
   layout,
-  solid,
+  zoned,
 }) => {
   const { t } = useI18n();
   const source = power && colors.length ? colors : [OFF];
   const lit = source.map((c) => {
-    if (solid) return c;
+    if (zoned) return c;
     return dim(softenForDisplay(c), power ? Math.max(brightness, 12) : 100);
   });
   const intensity = power ? brightness / 100 : 0;
@@ -154,14 +154,13 @@ export const DevicePreview: FC<DevicePreviewProps> = ({
     );
   }
 
-  if (solid) {
-    const fill = lit[0] ?? OFF;
-    const [leftCount, rightCount] = stickSegmentCounts(layout, segments ?? 1);
+  if (zoned) {
+    const [leftColors, rightColors] = zonedStickColors(lit, layout, segments ?? 1);
     return (
       <PreviewFrame caption={caption("device.preview.rings")}>
         <div style={{ display: "flex", justifyContent: "center", gap: 34 }}>
-          <Ring colors={repeatColor(fill, leftCount)} intensity={intensity} segmented />
-          <Ring colors={repeatColor(fill, rightCount)} intensity={intensity} segmented />
+          <Ring colors={leftColors} intensity={intensity} segmented />
+          <Ring colors={rightColors} intensity={intensity} segmented />
         </div>
       </PreviewFrame>
     );

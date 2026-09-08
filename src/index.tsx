@@ -1261,7 +1261,7 @@ function Content() {
               layoutKind={capabilities.layoutKind}
               segments={capabilities.zones}
               layout={capabilities.layout}
-              solid={mode === "solid"}
+              zoned={mode === "solid" || mode === "gradient"}
               label={
                 contentMode === "ambient"
                   ? t("device.preview.ambient")
