@@ -1260,6 +1260,8 @@ function Content() {
               power={power}
               layoutKind={capabilities.layoutKind}
               segments={capabilities.zones}
+              layout={capabilities.layout}
+              solid={mode === "solid"}
               label={
                 contentMode === "ambient"
                   ? t("device.preview.ambient")
