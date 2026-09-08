@@ -47,7 +47,7 @@ DEFAULTS = {
     "gradient": [[0, 196, 255], [136, 86, 255]],
     "gradient_speed": 30,
     "effect": {"id": "breathing", "speed": 50, "use_gradient": False},
-    "ambilight": {"vividness": 27, "smoothing": 75, "fps": 10, "sampling": "columns"},
+    "ambilight": {"vividness": 27, "smoothing": 75, "fps": 10, "sampling": "columns", "algorithm": "average"},
     "saved_gradients": [],
     "enabled_experiments": [],
     "power_led_off": False,
@@ -1031,6 +1031,7 @@ class Plugin:
                         self._capabilities.get("perZone")
                         or self._capabilities.get("perControllerColor")
                     ),
+                    "algorithm": amb.get("algorithm", "average"),
                     "fallback": tuple(s["color"]),
                 }
             )

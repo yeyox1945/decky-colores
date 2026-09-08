@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  AmbilightAlgorithm,
   ColoresState,
   EffectId,
   EffectState,
@@ -258,6 +259,13 @@ export function useColores() {
     void pushProfile({ ambilight: { sampling } });
   };
 
+  const setAmbilightAlgorithm = (algorithm: AmbilightAlgorithm) => {
+    setState((s) =>
+      s ? { ...s, ambilight: { ...s.ambilight, algorithm } } : s,
+    );
+    void pushProfile({ ambilight: { algorithm } });
+  };
+
   const saveGradient = (name: string, stops: RGB[]) => {
     api
       .saveGradient(
@@ -380,6 +388,7 @@ export function useColores() {
     setEffectGradient,
     setAmbilight,
     setAmbilightSampling,
+    setAmbilightAlgorithm,
     saveGradient,
     deleteGradient,
     setExperiment,

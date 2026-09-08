@@ -10,7 +10,13 @@ DEFAULT_PROFILE = {
     "gradient": [[0, 196, 255], [136, 86, 255]],
     "gradient_speed": 30,
     "effect": {"id": "breathing", "speed": 50, "use_gradient": False},
-    "ambilight": {"vividness": 27, "smoothing": 75, "fps": 10, "sampling": "columns"},
+    "ambilight": {
+        "vividness": 27,
+        "smoothing": 75,
+        "fps": 10,
+        "sampling": "columns",
+        "algorithm": "average",
+    },
     "battery_breathe": True,
     "temperature_breathe": True,
 }
@@ -50,6 +56,7 @@ def test_nested_effect_and_ambilight_updates_are_merged(tmp_path):
 
     store.patch("global", None, {"effect": {"speed": 20}})
     store.patch("global", None, {"ambilight": {"fps": 30}})
+    store.patch("global", None, {"ambilight": {"algorithm": "dominant"}})
 
     profile = store.editable("global", None)
     assert profile["effect"] == {
@@ -62,6 +69,7 @@ def test_nested_effect_and_ambilight_updates_are_merged(tmp_path):
         "smoothing": 75,
         "fps": 30,
         "sampling": "columns",
+        "algorithm": "dominant",
     }
 
 

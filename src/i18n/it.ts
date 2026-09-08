@@ -130,14 +130,18 @@ export const it: Record<string, string> = {
 
   "ambient.gameModeBanner":
     "Non c’è ancora una schermata da acquisire. Ambilight funziona in modalità Gioco quando è aperto un gioco, non in modalità Desktop né in Big Picture.",
-  "ambient.stickHint":
+  "ambient.averageHint":
     "Le luci seguono le zone dello schermo vicine a ciascuno stick: a sinistra campionano l'area in alto a sinistra, a destra l'area centrale destra.",
+  "ambient.dominantHint":
+    "Le luci seguono il colore dominante di ciascun lato dello schermo.",
   "ambient.globalHint": "Le luci seguono il colore medio dell'intero schermo.",
   "ambient.sampling.columns": "Colonne",
   "ambient.sampling.bottom_edge": "Bordo inferiore",
   "ambient.vividness": "Vividezza",
   "ambient.smoothing": "Fluidità",
   "ambient.captureRate": "Frequenza di acquisizione",
+  "ambient.algorithm.dominant": "Dominante",
+  "ambient.algorithm.average": "Media",
 
   "sensors.battery": "Batteria",
   "sensors.temperature": "Temperatura",
