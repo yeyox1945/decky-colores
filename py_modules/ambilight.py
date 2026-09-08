@@ -372,7 +372,7 @@ class Ambilight:
 
     def _update_targets(self, frame):
         sat = float(self._options.get("saturation", 1.4))
-        algo = self._options.get('algorithm', 'dominant')
+        algo = self._options.get("algorithm", "average")
         if self._options.get("global_color"):
             target = boost_saturation(avg_region(frame, CAP_W, CAP_H, _FULL_REGION), sat)
             self._targets = [target] * self._zones

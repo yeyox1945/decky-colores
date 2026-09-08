@@ -210,11 +210,13 @@ class LightingProfileStore:
         raw_ambient = source.get("ambilight") if isinstance(source.get("ambilight"), dict) else {}
         base_ambient = base["ambilight"]
         sampling = raw_ambient.get("sampling")
+        algorithm = raw_ambient.get("algorithm")
         result["ambilight"] = {
             "vividness": _integer(raw_ambient.get("vividness"), base_ambient["vividness"]),
             "smoothing": _integer(raw_ambient.get("smoothing"), base_ambient["smoothing"]),
             "fps": _integer(raw_ambient.get("fps"), base_ambient["fps"], 1, 60),
             "sampling": sampling if sampling in ("columns", "average") else base_ambient["sampling"],
+            "algorithm": algorithm if algorithm in ("dominant", "average") else base_ambient["algorithm"],
         }
         result["battery_breathe"] = _boolean(
             source.get("battery_breathe"), base["battery_breathe"]

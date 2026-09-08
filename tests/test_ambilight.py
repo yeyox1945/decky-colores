@@ -272,7 +272,7 @@ def test_update_targets_maps_left_and_right_dominant_colors_to_sticks():
         {"name": "Right stick", "region": [0.70, 0.33, 1.0, 0.67], "zones": [4, 5, 6, 7]},
     ]
     amb = Ambilight(lambda c: None, zones=8, runtime_dir=None, layout=layout)
-    amb._options = {"saturation": 1.0}
+    amb._options = {"saturation": 1.0, "algorithm": "dominant"}
     amb._update_targets(bytes(frame))
 
     # Left stick zones (0..3) should match left palette colors
