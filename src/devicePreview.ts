@@ -3,6 +3,9 @@ import { expandGradient, rgbToCss } from "./color";
 
 const OFF: RGB = { r: 26, g: 26, b: 32 };
 export const SEGMENT_GAP_DEGREES = 8;
+// CSS conic 0deg is 12 o'clock, clockwise, so zone 0 would sit on the right half.
+// Start at 180deg so the first LED is on the left, matching linear-gradient(90deg).
+export const RING_ORIGIN_DEG = 180;
 
 export function stickGroups(layout: ZoneGroup[] | undefined): ZoneGroup[] {
   return (layout ?? []).filter(
@@ -51,7 +54,7 @@ export function zonedStickColors(
 
 export function segmentedConic(
   colors: RGB[],
-  fromDeg = 0,
+  fromDeg = RING_ORIGIN_DEG,
   gapDeg = SEGMENT_GAP_DEGREES,
 ): string {
   if (colors.length <= 1) return rgbToCss(colors[0] ?? OFF);

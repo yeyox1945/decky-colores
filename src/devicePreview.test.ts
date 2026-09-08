@@ -70,10 +70,14 @@ describe("segmentedConic", () => {
   });
 
   it("paints hard sectors with a transparent gap and no wrap blend", () => {
-    const css = segmentedConic([red, blue], 0, 8);
+    const css = segmentedConic([red, blue], 180, 8);
     expect(css).toBe(
-      "conic-gradient(from 0deg, rgb(255, 0, 0) 0deg 172deg, transparent 172deg 180deg, rgb(0, 0, 255) 180deg 352deg, transparent 352deg 360deg)",
+      "conic-gradient(from 180deg, rgb(255, 0, 0) 0deg 172deg, transparent 172deg 180deg, rgb(0, 0, 255) 180deg 352deg, transparent 352deg 360deg)",
     );
     expect(css).not.toContain("360deg, rgb");
+  });
+
+  it("starts at 180deg so zone 0 sits on the left like a linear gradient", () => {
+    expect(segmentedConic([red, blue]).startsWith("conic-gradient(from 180deg")).toBe(true);
   });
 });

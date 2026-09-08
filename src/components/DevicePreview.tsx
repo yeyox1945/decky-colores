@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { RGB, ZoneGroup } from "../types";
 import { dim, expandGradient, rgbToCss, softenForDisplay } from "../color";
-import { segmentedConic, zonedStickColors } from "../devicePreview";
+import { RING_ORIGIN_DEG, segmentedConic, zonedStickColors } from "../devicePreview";
 import { useI18n } from "../i18n";
 
 interface DevicePreviewProps {
@@ -65,7 +65,7 @@ const Ring: FC<{ colors: RGB[]; intensity: number; segmented?: boolean }> = ({
           position: "absolute",
           inset: 0,
           borderRadius: "50%",
-          background: segmented ? segmentedConic(colors) : conic(colors),
+          background: segmented ? segmentedConic(colors, RING_ORIGIN_DEG) : conic(colors),
           WebkitMask: RING_MASK,
           mask: RING_MASK,
           filter: `drop-shadow(0 0 ${4 + intensity * 9}px ${glow}) blur(0.6px)`,
